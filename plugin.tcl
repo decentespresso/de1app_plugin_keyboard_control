@@ -51,7 +51,7 @@ namespace eval ::plugins::${plugin_name} {
 		variable last_keypress_time
 		variable repeated_keypress_count
 		# lowercase letters have a keycode offset of 93 between ASCII and Android
-		if {$::some_droid} { incr keycode 93 }
+		if {$::gui_runtime} { incr keycode 93 }
 
 		# only allow lowercase letters
 		if {$keycode >= 97 && $keycode <= 122} {
