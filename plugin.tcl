@@ -210,8 +210,29 @@ namespace eval ::plugins::${plugin_name} {
 		return $page_name
 	}
 
+	# Canonical default keybindings. These used to ship as plugins/keyboard_control/
+	# settings.tdb via the misc.tcl manifest, but that file lived in the writable data
+	# root and picked up the developer's runtime state, so it was dropped from the
+	# manifest. Defaults now live here in code (version-controlled, never re-dirtied by
+	# runtime writes) and are provisioned on first run when no settings.tdb exists yet.
+	proc ensure_default_settings {} {
+		variable settings
+		foreach {k v} {
+			espresso_key e  espresso_keycode 101
+			flush_key    f  flush_keycode    102
+			steam_key    s  steam_keycode    115
+			water_key    w  water_keycode    119
+			enable_next_step_tap 0
+		} {
+			if {![info exists settings($k)]} {
+				set settings($k) $v
+			}
+		}
+	}
+
 	proc main {} {
 		msg [namespace current] "keyboard_control plugin enabled"
+		ensure_default_settings
 		focus .can
 		bind Canvas <KeyPress> {::plugins::keyboard_control::handle_keypress %k %t}
 	}
